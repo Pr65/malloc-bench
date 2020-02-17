@@ -61,7 +61,7 @@ mod vector_bench {
             data.push(rng.gen::<usize>());
         }
         bencher.iter(|| {
-            let vec = data
+            let _vec = data
                 .par_iter()
                 .map(|x| x + 1)
                 .collect::<Vec<_>>();
@@ -76,7 +76,7 @@ mod vector_bench {
             data.push(rng.gen::<usize>());
         }
         bencher.iter(|| {
-            let vec = data
+            let _vec = data
                 .par_iter()
                 .map(|x| {
                     vec![*x, x + 1, x + 2, x + 3, x + 4, x + 5, x + 6, x + 7, x + 8, x + 9]
@@ -94,7 +94,7 @@ mod vector_bench {
             data.push(rng.gen::<usize>());
         }
         bencher.iter(|| {
-            let vec = data
+            let _vec = data
                 .iter()
                 .map(|x| {
                     vec![*x, x + 1, x + 2, x + 3, x + 4, x + 5, x + 6, x + 7, x + 8, x + 9]
