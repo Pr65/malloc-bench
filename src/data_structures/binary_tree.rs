@@ -177,14 +177,14 @@ impl<T : Debug> Debug for BinaryTree<T> {
 }
 
 #[cfg(test)]
-mod test {
+mod bintree_bench {
     use test::Bencher;
-    use rand::Rng;
-    use rand::prelude::SliceRandom;
+    use rand::{Rng, SeedableRng};
+    use rand::prelude::{SliceRandom, StdRng};
 
     #[bench]
     fn random_insertion_10000(bencher: &mut Bencher) {
-        let mut rng = rand::thread_rng();
+        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
         bencher.iter(|| {
             let mut tree= super::BinaryTree::new();
             for _ in 0..10000 {
@@ -195,7 +195,7 @@ mod test {
 
     #[bench]
     fn random_insert_then_remove_10000(bencher: &mut Bencher) {
-        let mut rng = rand::thread_rng();
+        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
         let mut data = Vec::new();
         for _ in 0..10000 {
             data.push(rng.gen::<usize>());

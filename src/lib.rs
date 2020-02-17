@@ -2,6 +2,7 @@
 #![feature(test)]
 #![feature(allocator_api)]
 mod data_structures;
+use lazy_static::*;
 
 #[cfg(feature = "bench_rpmalloc")]
 #[global_allocator]
@@ -28,6 +29,11 @@ static GLOBAL: tcmalloc::TCMalloc = tcmalloc::TCMalloc;
 #[global_allocator]
 static GLOBAL: snmalloc_rs::SnMalloc = snmalloc_rs::SnMalloc;
 
-fn main() {
-    println!("Hello, world!");
+lazy_static! {
+    pub static ref SEED : [u8; 32] = [
+     1, 2, 3, 4, 5, 6, 7, 8,
+     1, 2, 3, 4, 5, 6, 7, 8,
+     1, 2, 3, 4, 5, 6, 7, 8,
+     1, 2, 3, 4, 5, 6, 7, 8,
+    ];
 }

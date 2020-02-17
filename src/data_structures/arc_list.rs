@@ -69,12 +69,14 @@ fn map<T, U>(f: fn(&T) -> U, list: Ptr<T>) -> Ptr<U> {
 mod list_bench {
     use std::sync::Arc;
     use super::*;
-    use rand::Rng;
+    use rand::{Rng, SeedableRng};
+    use rand::prelude::StdRng;
+
     const SCALE: usize = 10000;
     #[bench]
     fn long_cons_then_count(bencher: &mut Bencher) {
         bencher.iter(|| {
-            let mut rng = rand::thread_rng();
+            let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
             let mut a = Arc::new(Nil);
             for _ in 0..SCALE {
                 a = cons(rng.gen::<usize>(), a);
@@ -86,7 +88,7 @@ mod list_bench {
     #[bench]
     fn long_cons_then_map(bencher: &mut Bencher) {
         bencher.iter(|| {
-            let mut rng = rand::thread_rng();
+            let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
             let mut a = Arc::new(Nil);
             for _ in 0..SCALE {
                 a = cons(rng.gen::<usize>(), a);
@@ -97,17 +99,25 @@ mod list_bench {
 
     #[bench]
     fn long_cons_then_count_in_multi_threads(bencher: &mut Bencher) {
-        bencher.iter(|| {
+        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        static mut DATA : Vec<usize> = Vec::new();
+        for _ in 0..SCALE {
+            unsafe {
+                DATA.push(rng.gen::<usize>());
+            }
+        }
+        bencher.iter(move || {
             let mut handles = Vec::new();
             for _ in 0..6 {
                 handles.push(std::thread::Builder::new()
                     .stack_size(512 * 1024 * 1024)
-                    .spawn(|| {
-                    let mut rng = rand::thread_rng();
-                    let mut a = Arc::new(Nil);
-                    for _ in 0..SCALE {
-                        a = cons(rng.gen::<usize>(), a);
-                    }
+                    .spawn(move || {
+                        let mut a = Arc::new(Nil);
+                        unsafe {
+                            for i in &DATA {
+                                a = cons(i, a);
+                            }
+                        }
                     assert_eq!(count(a), SCALE)
                 }).unwrap());
             }
@@ -117,18 +127,26 @@ mod list_bench {
 
     #[bench]
     fn long_cons_then_map_across_multi_threads(bencher: &mut Bencher) {
-        bencher.iter(|| {
-            let mut rng = rand::thread_rng();
+        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        static mut DATA : Vec<usize> = Vec::new();
+        for _ in 0..SCALE {
+            unsafe {
+                DATA.push(rng.gen::<usize>());
+            }
+        }
+        bencher.iter( || {
             let mut handles = Vec::new();
             let mut a = Arc::new(Nil);
-            for _ in 0..SCALE {
-                a = cons(rng.gen::<usize>(), a);
+            unsafe {
+                for i in &DATA {
+                    a = cons(*i, a);
+                }
             }
             for _ in 0..6 {
                 let a = a.clone();
                 handles.push(std::thread::Builder::new()
                     .stack_size(512 * 1024 * 1024)
-                    .spawn(move || {
+                    .spawn(|| {
                         map(|x| x + 1, a);
                     }).unwrap());
             }
