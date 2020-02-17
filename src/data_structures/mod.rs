@@ -4,3 +4,4 @@ mod vector;
 mod btree;
 mod sk_list;
 mod seg_queue;
+mod hash;

@@ -21,6 +21,7 @@ simd-json = "*"
 rayon = "*"
 crossbeam = "*"
 crossbeam-skiplist = { git = "https://github.com/crossbeam-rs/crossbeam", features = ["nightly"] }
+hashbrown = "*"
 
 [features]
 bench_wee_alloc = []
