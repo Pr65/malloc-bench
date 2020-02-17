@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::cell::RefCell;
 use std::fmt::{Debug, Error, Formatter};
 use std::rc::{Rc, Weak};
@@ -177,49 +178,40 @@ impl<T : Debug> Debug for BinaryTree<T> {
 
 #[cfg(test)]
 mod test {
-    use crate::data_structures::binary_tree::{locate, new_cell};
+    use test::Bencher;
+    use rand::Rng;
+    use rand::prelude::SliceRandom;
 
-    #[test]
-    fn test_node() {
-        let mut root = Some(new_cell(5));
-        super::insert(&mut root, 2, None);
-        super::insert(&mut root, 3, None);
-        super::insert(&mut root, 0, None);
-        super::insert(&mut root, 0, None);
-        println!("{:?}", *root.as_ref().unwrap().borrow());
-        let two = locate(&mut root, 2);
-        //println!("{:?}", two);
-        super::remove(two.unwrap(), &mut root);
-        println!("{:?}", *root.as_ref().unwrap().borrow());
-        super::insert(&mut root, 4, None);
-        println!("{:?}", *root.as_ref().unwrap().borrow());
-        let five = locate(&mut root, 5);
-        super::remove(five.unwrap(), &mut root);
-        println!("{:?}", *root.as_ref().unwrap().borrow());
+    #[bench]
+    fn random_insertion_10000(bencher: &mut Bencher) {
+        let mut rng = rand::thread_rng();
+        bencher.iter(|| {
+            let mut tree= super::BinaryTree::new();
+            for _ in 0..10000 {
+                tree.insert(rng.gen::<usize>());
+            }
+        });
     }
 
-    #[test]
-    fn test_tree() {
-        let mut tree = super::BinaryTree::new();
-        tree.insert(5);
-        tree.insert(2);
-        tree.insert(3);
-        tree.insert(0);
-        tree.insert(3);
-        println!("{:?}", tree);
-        tree.remove(5);
-        println!("{:?}", tree);
-        tree.remove(2);
-        tree.insert(10);
-        tree.insert(-1);
-        tree.insert(99);
-        tree.insert(20);
-        tree.insert(-30);
-        println!("{:?}", tree);
-        tree.insert(1);
-        tree.remove(3);
-        tree.remove(0);
-        println!("{:?}", tree);
+    #[bench]
+    fn random_insert_then_remove_10000(bencher: &mut Bencher) {
+        let mut rng = rand::thread_rng();
+        let mut data = Vec::new();
+        for _ in 0..10000 {
+            data.push(rng.gen::<usize>());
+        }
+        let mut codata = data.clone();
+        codata.shuffle(&mut rng);
+        bencher.iter(|| {
+            let mut tree= super::BinaryTree::new();
+            for i in &data {
+                tree.insert(i);
+            }
+            for i in &codata {
+                tree.remove(i);
+            }
+        });
     }
+
 }
 

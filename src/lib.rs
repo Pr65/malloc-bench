@@ -3,23 +3,6 @@
 #![feature(allocator_api)]
 mod data_structures;
 
-#[cfg(feature = "bench_numanji")]
-use numanji::prelude::*;
-
-#[cfg(feature = "bench_numanji")]
-use allocator_suite::prelude::*;
-
-#[cfg(feature = "bench_numanji")]
-autoselect!();
-
-#[cfg(feature = "bench_bump_alloc")]
-#[global_allocator]
-static GLOBAL : bump_alloc::BumpAlloc = bump_alloc::BumpAlloc::with_size(1024 * 1024 * 4);
-
-#[cfg(feature = "bench_ralloc")]
-#[global_allocator]
-static GLOBAL: ralloc::Allocator = ralloc::Allocator;
-
 #[cfg(feature = "bench_rpmalloc")]
 #[global_allocator]
 static GLOBAL: rpmalloc::RpMalloc = rpmalloc::RpMalloc;
@@ -43,7 +26,7 @@ static GLOBAL: tcmalloc::TCMalloc = tcmalloc::TCMalloc;
 
 #[cfg(any(feature = "bench_snmalloc", feature = "bench_snmalloc-1mib"))]
 #[global_allocator]
-static GLOBAL: snmallocator::SnMalloc = snmallocator::SnMalloc;
+static GLOBAL: snmalloc_rs::SnMalloc = snmalloc_rs::SnMalloc;
 
 fn main() {
     println!("Hello, world!");

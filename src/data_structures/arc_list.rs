@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::sync::Arc;
 use std::fmt::{Debug, Formatter, Error};
 use crate::data_structures::arc_list::ArcList::*;

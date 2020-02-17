@@ -12,15 +12,9 @@ mimalloc = { version = "*", default-features = false }
 jemallocator = "*"
 wee_alloc = "*"
 tcmalloc = "*"
-snmallocator = {git = "https://github.com/SchrodingerZhu/snmallocator"}
+snmalloc-rs = "*"
 rpmalloc = "*"
-bump_alloc = "*"
-numanji = "*"
-allocator-suite = "*"
 lazy_static = "*"
-
-[dependencies.ralloc]
-git = "https://github.com/redox-os/ralloc.git"
 
 [features]
 bench_wee_alloc = []
@@ -30,8 +24,5 @@ bench_tcmalloc = []
 bench_smimalloc = ["mimalloc/secure"]
 bench_fsmimalloc = ["mimalloc/secure-full"]
 bench_snmalloc = []
-bench_snmalloc-1mib = ["snmallocator/1mib"]
-bench_ralloc = []
+bench_snmalloc-1mib = ["snmalloc-rs/1mib"]
 bench_rpmalloc = []
-bench_bump_alloc = []
-bench_numanji = []
