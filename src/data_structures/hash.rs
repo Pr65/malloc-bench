@@ -2,12 +2,12 @@
 mod btree_bench {
     use test::Bencher;
     use rand::prelude::StdRng;
-    use rand::{SeedableRng, Rng};
+    use rand::Rng;
     use hashbrown::HashSet;
     use rayon::prelude::*;
     #[bench]
     fn set_insert_100000(bc : &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         let mut data = Vec::new();
         for _ in 0..100000 {
             data.push(rng.gen::<usize>());
@@ -22,7 +22,7 @@ mod btree_bench {
 
     #[bench]
     fn set_query_1000000(bc : &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         let mut data = Vec::new();
         let mut set = HashSet::new();
         for _ in 0..1000000 {
@@ -40,7 +40,7 @@ mod btree_bench {
 
     #[bench]
     fn set_rayon_query_1000000 (bc : &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         let mut data = Vec::new();
         let mut set = HashSet::new();
         for _ in 0..1000000 {

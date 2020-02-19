@@ -2,6 +2,8 @@
 use std::sync::Arc;
 use std::fmt::{Debug, Formatter, Error};
 use crate::data_structures::arc_list::ArcList::*;
+
+#[cfg(test)]
 use test::Bencher;
 enum ArcList<T> {
     Cons(T, Arc<Self>),
@@ -69,14 +71,14 @@ fn map<T, U>(f: fn(&T) -> U, list: Ptr<T>) -> Ptr<U> {
 mod list_bench {
     use std::sync::Arc;
     use super::*;
-    use rand::{Rng, SeedableRng};
+    use rand::Rng;
     use rand::prelude::StdRng;
 
     const SCALE: usize = 10000;
     #[bench]
     fn long_cons_then_count(bencher: &mut Bencher) {
         bencher.iter(|| {
-            let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+            let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
             let mut a = Arc::new(Nil);
             for _ in 0..SCALE {
                 a = cons(rng.gen::<usize>(), a);
@@ -88,7 +90,7 @@ mod list_bench {
     #[bench]
     fn long_cons_then_map(bencher: &mut Bencher) {
         bencher.iter(|| {
-            let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+            let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
             let mut a = Arc::new(Nil);
             for _ in 0..SCALE {
                 a = cons(rng.gen::<usize>(), a);
@@ -99,7 +101,7 @@ mod list_bench {
 
     #[bench]
     fn long_cons_then_count_in_multi_threads(bencher: &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         static mut DATA : Vec<usize> = Vec::new();
         for _ in 0..SCALE {
             unsafe {
@@ -127,7 +129,7 @@ mod list_bench {
 
     #[bench]
     fn long_cons_then_map_across_multi_threads(bencher: &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         static mut DATA : Vec<usize> = Vec::new();
         for _ in 0..SCALE {
             unsafe {

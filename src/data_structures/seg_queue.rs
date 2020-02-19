@@ -3,12 +3,12 @@
 mod seg_queue_bench {
     use test::Bencher;
     use rand::prelude::StdRng;
-    use rand::{SeedableRng, Rng};
+    use rand::Rng;
     use rayon::prelude::*;
 
     #[bench]
     fn rayon_insert_100000(bc : &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         let mut data = Vec::new();
         for _ in 0..100000 {
             data.push(rng.gen::<usize>());
@@ -23,7 +23,7 @@ mod seg_queue_bench {
 
     #[bench]
     fn ser_insert_par_pop_100000(bc : &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         static mut Q : Option<crossbeam::queue::SegQueue<usize>> = None;
         unsafe {
             Q.replace(crossbeam::queue::SegQueue::new());

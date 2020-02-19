@@ -22,6 +22,9 @@ rayon = "*"
 crossbeam = "*"
 crossbeam-skiplist = { git = "https://github.com/crossbeam-rs/crossbeam", features = ["nightly"] }
 hashbrown = "*"
+num = "*"
+mpi = "*"
+structopt = "*"
 
 [features]
 bench_wee_alloc = []
@@ -32,4 +35,13 @@ bench_smimalloc = ["mimalloc/secure"]
 bench_fsmimalloc = ["mimalloc/secure-full"]
 bench_snmalloc = []
 bench_snmalloc-1mib = ["snmalloc-rs/1mib"]
+bench_snmalloc-cache = ["snmalloc-rs/cache-friendly"]
 bench_rpmalloc = []
+
+[[bin]]
+name = "mandelbrot_thread"
+path = "src/applications/mandelbrot.rs"
+
+[[bin]]
+name = "mandelbrot_mpi"
+path = "src/applications/mpi_version/mandelbrot.rs"

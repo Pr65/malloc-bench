@@ -1,13 +1,13 @@
 #[cfg(test)]
 mod vector_bench {
     use test::Bencher;
-    use rand::{Rng, SeedableRng};
-    use rand::prelude::{SliceRandom, StdRng};
+    use rand::Rng;
+    use rand::prelude::StdRng;
     use rayon::prelude::*;
 
     #[bench]
     fn vector_push_100000(bencher: &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         let mut data = Vec::new();
         for _ in 0..100000 {
             data.push([rng.gen::<usize>(),
@@ -25,7 +25,7 @@ mod vector_bench {
 
     #[bench]
     fn vector_parallel_push_100000(bencher: &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         static mut DATA: Vec<[usize;7]> = Vec::new();
         for _ in 0..100000 {
             unsafe {
@@ -55,7 +55,7 @@ mod vector_bench {
 
     #[bench]
     fn vector_rayon_map_collect_100000(bencher: &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         let mut data = Vec::new();
         for _ in 0..100000 {
             data.push(rng.gen::<usize>());
@@ -70,7 +70,7 @@ mod vector_bench {
 
     #[bench]
     fn vector_rayon_map_flatten_collect_100000(bencher: &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         let mut data = Vec::new();
         for _ in 0..100000 {
             data.push(rng.gen::<usize>());
@@ -88,7 +88,7 @@ mod vector_bench {
 
     #[bench]
     fn vector_map_flatten_collect_100000(bencher: &mut Bencher) {
-        let mut rng : StdRng = rand::SeedableRng::from_seed(*crate::SEED);
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
         let mut data = Vec::new();
         for _ in 0..100000 {
             data.push(rng.gen::<usize>());
@@ -101,6 +101,58 @@ mod vector_bench {
                 })
                 .flatten()
                 .collect::<Vec<_>>();
+        })
+    }
+
+    #[bench]
+    fn vector_copy_and_sort_100000(bencher: &mut Bencher) {
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
+        let mut data = Vec::new();
+        for _ in 0..100000 {
+            data.push(rng.gen::<usize>());
+        }
+        bencher.iter(|| {
+            let mut _vec = data.clone();
+            _vec.sort();
+        })
+    }
+
+    #[bench]
+    fn vector_copy_and_usort_100000(bencher: &mut Bencher) {
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
+        let mut data = Vec::new();
+        for _ in 0..100000 {
+            data.push(rng.gen::<usize>());
+        }
+        bencher.iter(|| {
+            let mut _vec = data.clone();
+            _vec.sort_unstable();
+        })
+    }
+
+    #[bench]
+    fn vector_copy_and_par_sort_100000(bencher: &mut Bencher) {
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
+        let mut data = Vec::new();
+        for _ in 0..100000 {
+            data.push(rng.gen::<usize>());
+        }
+        bencher.iter(|| {
+            let mut _vec = data.clone();
+            _vec.par_sort();
+        })
+    }
+
+    #[bench]
+    fn vector_copy_and_par_usort_100000(bencher: &mut Bencher) {
+        let mut rng : StdRng = rand::SeedableRng::from_seed(crate::SEED);
+        let mut data = Vec::new();
+        for _ in 0..100000 {
+            data.push(rng.gen::<usize>());
+        }
+        bencher.iter(|| {
+            let mut _vec = data.clone();
+            _vec.par_sort_unstable();
         })
     }
 
